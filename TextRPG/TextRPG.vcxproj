@@ -141,6 +141,11 @@
   <ItemGroup>
     <ClCompile Include="TextRPG.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Inventory.h" />
+    <ClInclude Include="Monster.h" />
+    <ClInclude Include="Player.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

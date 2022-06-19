@@ -1,63 +1,243 @@
 ﻿#include <iostream>
+#include "time.h"
+#include "stdlib.h"
 
-//게임 외부
-// 1. UI
-// 전환은 어떤식?
-// 창마다 클래스 구현 매니저로 관리?
-// 
-// 
-// 
-// 
-// 
-// 게임 내부
-// 1. 플레이어 
-// 1.1 스텟
-// 레벨 경험치 HP MP 공격력 방어력 돈 -> 일단 이정도만
-// 더뭐있을까 여러 스텟 int str luk 데미지 계산은? 
-// 1.2 직업 
-// 직업을 갖는다... 매리트는?원거리 직업과 근거리 직업의 차이점은? 스킬만 다르게 갖는다? -> 원거리 근접공격력 약함 대신 치명,회피스텟 상승?, 법사 스킬 데미지 강함 방어력 약함 스킬의 다향성, 근거리 근접공격력 높음 방어력 높음
-// 1.3 인벤토리
-// 무기 방어구 물약
-// 장신구? 스텟 보조용 장비 -> 직업 추가하면 고려해봄
-// 1.4 스킬
-// 어떻게 넣을까 -> 직업 별로 스킬 트리 다름, 레벨오르면 스킬 해금 
-// 버프 스킬 추가?
-// MP는 직업 별로 다르게?
-// 1.5 레벨업 
-// 레벨업시 기본 스텟 상승 스킬및 상점 물품 해금
-// 2. 몬스터
-// 2.1 스텟
-// 기본 몬스터 클래스 상속
-// 몬스터 종류만 분리 기본 스텟 설정
-// 기본 스텟은 플레이어 레벨 비례 상승
-// 2.2 전투
-// 기본 후공 
-// 스킬? 그냥 강공격을 넣고 모션을 취하게 할까(한턴 쉼)?
-// 전투 끝날때 플레이어에게 줄 경험치, 아이템 테이블을 갖게 할까?
-// 2.3 보스 몹
-// 주기? 따로 만들어야하나? 스킬을 추가하면 일반 몹 상속? 
-// 없으면 그냥 일반못 스텟 뻥튀기 / 그럼 드랍 테이블은? 더 줄까? 2개씩
-// 3. 상점
-// 무기 방어구 물약 플레이어 레벨이 올라가면 상품 해금?
-// 4. 전투
-// 데미지는 어떻게 적용할까 (공격력-방어력)? -> 직업있으면 복잡해지네 근접공격시 str*공격력 마법공격시 int*공격력 -> 그럼 장비는 공격력 상승이 아니라 스텟 상승으로 적용해야하나? 
-// 치명타 추가? -> 추가하려면 (rand()%100>발동확률 ) 이런식? 발동확률 증가 아이템 추가 데미지는 1.5배
-// 회피? -> 치명타 동일 회피시 데미지 0 스텟에 추가 출력
-// 몬스터도 추가해 줘야하나? 몬스터의 다양성 회피특화 스킬 특화 -> 할게 너무 많음 
-// 5. 더 필요한게 있나?
-// 맵을 넣는다? 텍스트 알피지에 필요한가?
-// 저장 불러오기 기능?
-// 뭘추가하는게 좋을까..
+#include "Player.h"
+#include "Monster.h"
 
 
 
+using namespace std;
 
+enum MAIN_MENU
+{
+	MM_NONE,
+	MM_MAP,
+	MM_EXIT
+};
 
+enum MAP_TYPE
+{
+	MT_NONE,
+	MT_EASY,
+	MT_NORMAL,
+	MT_HARD,
+	MT_BACK
+};
 
-
-
+enum BATTLE
+{
+	BATTLE_NONE,
+	BATTLE_ATTACK,
+	BATTLE_BACK
+};
 
 int main()
 {
-    std::cout << "Hello World!\n";
+	srand((unsigned int)time(0));
+
+	// 플레이어 정보 설정
+	Player player;
+
+	cout << "이름 : ";
+	std::string playername;
+	cin >> playername;
+	player.Create(playername);
+
+
+
+	while (true)
+	{
+
+		// 몬스터 생성
+		_tagMonster	monsterArr[MT_BACK - 1] = {};
+
+		// 고블린 생성
+		monsterArr[0].name = "고블린";
+		monsterArr[0].attackMin = 20;
+		monsterArr[0].attackMax = 30;
+		monsterArr[0].armorMin = 2;
+		monsterArr[0].armorMax = 5;
+		monsterArr[0].hpMax = 100;
+		monsterArr[0].hp = 100;
+		monsterArr[0].mpMax = 10;
+		monsterArr[0].mp = 10;
+		monsterArr[0].level = 1;
+		monsterArr[0].exp = 10;
+		monsterArr[0].goldMin = 500;
+		monsterArr[0].goldMax = 800;
+
+		// 트롤
+		monsterArr[1].name = "트롤";
+		monsterArr[1].attackMin = 80;
+		monsterArr[1].attackMax = 130;
+		monsterArr[1].armorMin = 60;
+		monsterArr[1].armorMax = 90;
+		monsterArr[1].hpMax = 2000;
+		monsterArr[1].hp = 2000;
+		monsterArr[1].mpMax = 100;
+		monsterArr[1].mp = 100;
+		monsterArr[1].level = 5;
+		monsterArr[1].exp = 80;
+		monsterArr[1].goldMin = 4000;
+		monsterArr[1].goldMax = 7000;
+
+		// 드래곤
+		monsterArr[2].name = "드래곤";
+		monsterArr[2].attackMin = 250;
+		monsterArr[2].attackMax = 500;
+		monsterArr[2].armorMin = 200;
+		monsterArr[2].armorMax = 400;
+		monsterArr[2].hpMax = 30000;
+		monsterArr[2].hp = 30000;
+		monsterArr[2].mpMax = 20000;
+		monsterArr[2].mp = 20000;
+		monsterArr[2].level = 10;
+		monsterArr[2].exp = 30000;
+		monsterArr[2].goldMin = 30000;
+		monsterArr[2].goldMax = 70000;
+
+		// 상점에서 판매할 아에팀 목록을 생성한다.
+
+		// 무기 리스트
+
+
+
+		// 메인 화면
+		while (true)
+		{
+			system("cls");
+			cout << endl << "========== 메인 메뉴 ==========" << endl << endl;
+			cout << "1. 지도 " << endl;
+			cout << "메뉴를 선택하세요 : ";
+			int menu;
+			cin >> menu;
+
+			if (cin.fail())
+			{
+				cin.clear();
+				cin.ignore(1024, '\n');
+				continue;
+			}
+
+			if (menu == MM_EXIT)
+			{
+				break;
+			}
+
+			switch (menu)
+			{
+			case MM_MAP:
+				while (true)
+				{
+					system("cls");
+					cout << endl << "========== 맵 종류 ==========" << endl << endl;
+					cout << "1. 쉬움" << endl;
+					cout << "2. 보통" << endl;
+					cout << "3. 어려움" << endl;
+					cout << "4. 뒤로가기" << endl;
+					cout << "맵을 선택하세요 : ";
+					cin >> menu;
+
+					if (cin.fail())
+					{
+						cin.clear();
+						cin.ignore(1024, '\n');
+						continue;
+					}
+
+					if (menu == MT_BACK)
+					{
+						// 맵 선택 화면에서 빠져나간다
+						break;
+					}
+
+					// 선택한 메뉴에서 1을 빼주면 몬스터 배열의 인덱스가 된다.
+						// 이렇게 해당 맵의 몬스터를 설정
+					_tagMonster monster = monsterArr[menu - 1];
+
+					// 전투
+					while (true)
+					{
+						system("cls");
+						switch (menu)
+						{
+						case MT_EASY:
+							cout << "********** 쉬움 **********" << endl;
+							break;
+						case MT_NORMAL:
+							cout << "********** 보통 **********" << endl;
+							break;
+						case MT_HARD:
+							cout << "********** 어려움 **********" << endl;
+							break;
+						}
+
+						// 플레이어 정보를 출력
+						player.ShowStats();
+
+						// 몬스터 정보를 출력
+						cout << "========== 몬스터 ==========" << endl;
+						cout << "이름 : " << monster.name << "\t레벨 : " << monster.level << endl;
+						cout << "공격력 : " << monster.attackMin << " ~ " << monster.attackMax << endl;
+						cout << "방어력 : " << monster.armorMin << " ~ " << monster.armorMax << endl;
+						cout << "체력 : " << monster.hp << " / " << monster.hpMax << "\t마나 : " << monster.mp << " / " << monster.mpMax << endl;
+						cout << "획득 경험치 : " << monster.exp << "\t획득 골드 : " << monster.goldMin << " ~ " << monster.goldMax << endl << endl;
+
+						cout << "========== 행동 ==========" << endl;
+						cout << "1. 공격" << endl;
+						cout << "2. 도망가기" << endl;
+						cout << "행동을 선택하세요." << endl;
+						cin >> menu;
+
+						if (cin.fail())
+						{
+							cin.clear();
+							cin.ignore(1024, '\n');
+							continue;
+						}
+
+						else if (menu == BATTLE_BACK)
+						{
+							break;
+						}
+
+						switch (menu)
+						{
+						case BATTLE_ATTACK:
+							player.Attak(&monster);
+
+							// 몬스터가 죽음
+							if (monster.hp <= 0)
+							{
+								player.Win(&monster);
+
+								// 몬스터 스탯을 초기화
+								monster.hp = monster.hpMax;
+								monster.mp = monster.mpMax;
+
+								system("pause");
+								break;
+							}
+
+							// 몬스터가 살아있으면 플레이어를 공격
+							player.defense(&monster);
+
+							// 플레이어가 죽었을 경우
+							player.Defeat(&monster);
+
+							system("pause");
+
+							break;
+						}
+					}
+				}
+				break;
+
+			}
+
+
+		}
+		return 0;
+	}
 }
