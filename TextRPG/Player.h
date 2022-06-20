@@ -24,10 +24,8 @@ public:
 	void LevelUp()
 	{
 		++_level;
-		_attackMin *= 2;
-		_attackMax *= 2;
-		_armorMin *= 2;
-		_armorMax *= 2;
+		_attack *= 2;
+		_armor *= 2;
 		_hpMax *= 1.5;
 		_mpMax *= 1.5;
 		_hp = _hpMax;
@@ -41,7 +39,7 @@ public:
 		std::cout << "========== 플레이어 ==========\n";
 		
 		std::cout << "레벨 : " << _level << "\t경험치 : " << _exp << "\t다음 레벨까지 : "<< _nextExp <<"\n";
-		std::cout << "공격력 : " << _attackMax << "\t방어력 : " << _armorMax << "\n";
+		std::cout << "공격력 : " << _attack << "\t방어력 : " << _armor << "\n";
 		std::cout << "체력 : " << _hp << " / " << _hpMax << "\t마나 : " << _mp << " / " << _mpMax << "\n";
 		
 	}
@@ -52,16 +50,13 @@ public:
 	}
 	void Attak(_tagMonster* monster)
 	{
-		int attack = rand() % (_attackMax - _attackMin + 1) + (_attackMin);
+	
 		int armor = rand() % (monster->armorMax- monster->armorMin + 1) + (monster->armorMin);
 
-		int damage = attack - armor;
+		int damage = _attack - armor;
 
-		// 삼항연산자 : 조건식 ? true일 때 값, : false 일 때 값이 된다.
-		// 최소 데미지를 음수가 되지 않고 1로 설정
 		damage = damage < 1 ? 1 : damage;
 
-		// 몬스터 HP를 감소시킨다.
 		monster->hp -= damage;
 
 		std::cout << _name << "가 " << monster->name << "에게 " << damage << "의 피해를 입혔습니다.\n";
@@ -70,9 +65,9 @@ public:
 	void defense(_tagMonster* monster)
 	{
 		int attack = rand() % (monster->attackMax - monster->attackMin + 1) + (monster->attackMin);
-		int armor = rand() % (_armorMax - _armorMin + 1) + (_armorMin);
+	
 
-		int damage = attack - armor;
+		int damage = attack - _armor;
 
 		damage = damage < 1 ? 1 : damage;
 
@@ -104,7 +99,7 @@ public:
 		
 		std::cout << "현재돈 : " << _inventory.gold << "강화 확률 : 10%\n";
 		std::cout << "강화비용 : 1000gold\n";
-		std::cout << "강화하기 : 1\n 돌아가기 : 2\n";
+		std::cout << "강화하기 : 1\n돌아가기 : 2\n";
 		int input;
 		std::cin >> input;
 		switch (input)
@@ -120,10 +115,10 @@ public:
 				if (rand() % 100 + 1 > 10)
 				{
 					std::cout << "강화에 성공하셨습니다.\n";
-					_attackMin *= 2;
-					_attackMax *= 2;
-					_armorMin *= 2;
-					_armorMax *= 2;
+					_attack *= 2;
+					
+					_armor *= 2;
+					
 				}
 				else
 					"강화에 실패했습니다.";
@@ -160,10 +155,10 @@ public:
 private:
 	std::string	_name = "";
 
-	int _attackMin = 10;
-	int _attackMax = 10;
-	int _armorMin = 20;
-	int _armorMax = 20;
+	int _attack = 10;
+	
+	int _armor = 20;
+	
 
 	int _hp = 500;
 	int _hpMax = 500;
