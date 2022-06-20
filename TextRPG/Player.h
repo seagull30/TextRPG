@@ -5,7 +5,7 @@
 #include "Inventory.h"
 
 #include "monster.h"
-
+#include <conio.h> 
 
 
 class Player
@@ -18,16 +18,16 @@ public:
 	void Create(std::string name)
 	{
 		_name = name;
-		_inventory.gold = 0;
+		_inventory.gold = 100000;
 	}
 
 	void LevelUp()
 	{
 		++_level;
-		_attackMin += 5;
-		_attackMax += 10;
-		_armorMin += 15;
-		_armorMax += 20;
+		_attackMin *= 2;
+		_attackMax *= 2;
+		_armorMin *= 2;
+		_armorMax *= 2;
 		_hpMax *= 1.5;
 		_mpMax *= 1.5;
 		_hp = _hpMax;
@@ -41,12 +41,15 @@ public:
 		std::cout << "========== 플레이어 ==========\n";
 		
 		std::cout << "레벨 : " << _level << "\t경험치 : " << _exp << "\t다음 레벨까지 : "<< _nextExp <<"\n";
-		std::cout << "공격력 : " << _attackMin << " ~ " << _attackMax << "\n";
-		std::cout << "방어력 : " << _armorMin << " ~ " << _armorMax << "\n";
+		std::cout << "공격력 : " << _attackMax << "\t방어력 : " << _armorMax << "\n";
 		std::cout << "체력 : " << _hp << " / " << _hpMax << "\t마나 : " << _mp << " / " << _mpMax << "\n";
-		std::cout << "소지금 : " << _inventory.gold << "\n\n";
+		
 	}
 
+	int GetPlayerLV()
+	{
+		return _level;
+	}
 	void Attak(_tagMonster* monster)
 	{
 		int attack = rand() % (_attackMax - _attackMin + 1) + (_attackMin);
@@ -96,6 +99,44 @@ public:
 		}
 
 	}
+	void Enforse()
+	{
+		
+		std::cout << "현재돈 : " << _inventory.gold << "강화 확률 : 10%\n";
+		std::cout << "강화비용 : 1000gold\n";
+		std::cout << "강화하기 : 1\n 돌아가기 : 2\n";
+		int input;
+		std::cin >> input;
+		switch (input)
+		{
+		case 1:
+			if (_inventory.gold < 0) 
+			{
+				std::cout << "돈이 모자랍니다.\n";
+			}
+			else
+			{
+				_inventory.gold -= 1000;
+				if (rand() % 100 + 1 > 10)
+				{
+					std::cout << "강화에 성공하셨습니다.\n";
+					_attackMin *= 2;
+					_attackMax *= 2;
+					_armorMin *= 2;
+					_armorMax *= 2;
+				}
+				else
+					"강화에 실패했습니다.";
+			}
+			system("pause");
+			break;
+		case 2:
+			return;
+			break;
+		}
+		
+		
+	}
 
 	void Defeat(_tagMonster* monster)
 	{
@@ -119,9 +160,9 @@ public:
 private:
 	std::string	_name = "";
 
-	int _attackMin = 5;
-	int _attackMax = 100;
-	int _armorMin = 15;
+	int _attackMin = 10;
+	int _attackMax = 10;
+	int _armorMin = 20;
 	int _armorMax = 20;
 
 	int _hp = 500;
